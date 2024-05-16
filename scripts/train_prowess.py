@@ -16,6 +16,8 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 import numpy as np
 
+enets = [efficientnet_b0, efficientnet_b1, efficientnet_b2, efficientnet_b3, efficientnet_b4, efficientnet_b5, efficientnet_b6, efficientnet_b7, efficientnet_b8]
+
 
 class ProwessNet(LightningModule):
 
@@ -62,8 +64,9 @@ class ProwessNet(LightningModule):
 
 @click.command()
 @click.option("--id_seed", default=None, help="Unique integer seed for dataset reproducibility")
+@click.option("--enet", default=0, type=int, help="EfficientNet model version to use")
 @click.option("--snr", nargs=2, type=int, default=None, help="Target min/max SNR for the training dataset")
-def main(id_seed: int, snr: Tuple[int, int]):
+def main(id_seed: int, enet: int, snr: Tuple[int, int]):
 
    # List of modulation classes to include in training
    class_list = ["ook", "bpsk", "4pam", "4ask", "qpsk", "8pam", "8ask", "8psk",
@@ -102,6 +105,7 @@ def main(id_seed: int, snr: Tuple[int, int]):
       transform=transform,
       include_snr=False,
       eb_no=False)
+   print("EfficientNet Version: {}".format(enet))
    print("Target SNR Range: {}".format(snr if snr is not None else (100, 100)))
    print("Dataset length: {}".format(len(train_dataset)))
    print("Number of classes: {}".format(num_classes))
@@ -124,7 +128,7 @@ def main(id_seed: int, snr: Tuple[int, int]):
       persistent_workers=True)
 
    # Create the EfficientNet model and move it to the correct training device
-   model = efficientnet_b0(num_classes=num_classes)
+   model = enets[enet](num_classes=num_classes)
    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
    model = model.to(device)
    prowess_model = ProwessNet(model, train_dataloader, val_dataloader)

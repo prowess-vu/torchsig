@@ -6,13 +6,7 @@ import timm
 import torch
 from torch import nn
 
-__all__ = ["efficientnet_b0", "efficientnet_b2", "efficientnet_b4"]
-
-file_ids = {
-    "efficientnet_b0": "1ZQIBRZJiwwjeP4rB7HxxFzFro7RbxihG",
-    "efficientnet_b2": "1yaPZS5bbf6npHfUVdswvUnsJb8rDHlaa",
-    "efficientnet_b4": "1KCoLY5X0rIc_6ArmZRdkxZOOusIHN6in",
-}
+__all__ = ["efficientnet_b0", "efficientnet_b1", "efficientnet_b2", "efficientnet_b3", "efficientnet_b4", "efficientnet_b5", "efficientnet_b6", "efficientnet_b7", "efficientnet_b8"]
 
 
 class SqueezeExcite(nn.Module):
