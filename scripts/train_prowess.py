@@ -8,6 +8,7 @@ from pytorch_lightning import LightningModule, Trainer
 from sklearn.metrics import classification_report
 from torch.utils.data import DataLoader
 from matplotlib import pyplot as plt
+from typing import Tuple
 from torch import optim
 from tqdm import tqdm
 import click, torch, os, random, sys
@@ -61,8 +62,8 @@ class ProwessNet(LightningModule):
 
 @click.command()
 @click.option("--id_seed", default=None, help="Unique integer seed for dataset reproducibility")
-@click.option("--snr", default=100, help="Target SNR for the training dataset")
-def main(id_seed: int, snr: int):
+@click.option("--snr", nargs=2, type=int, default=None, help="Target min/max SNR for the training dataset")
+def main(id_seed: int, snr: Tuple[int, int]):
 
    # List of modulation classes to include in training
    class_list = ["ook", "bpsk", "4pam", "4ask", "qpsk", "8pam", "8ask", "8psk",
@@ -101,6 +102,7 @@ def main(id_seed: int, snr: int):
       transform=transform,
       include_snr=False,
       eb_no=False)
+   print("Target SNR Range: {}".format(snr if snr is not None else (100, 100)))
    print("Dataset length: {}".format(len(train_dataset)))
    print("Number of classes: {}".format(num_classes))
    print("Data shape: {}".format(train_dataset[0][0].shape))
