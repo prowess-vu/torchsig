@@ -16,7 +16,7 @@ classifiers = [
 ]
 keywords = ["signal processing", "machine learning"]
 dependencies = [
-    "torch==2.0.1",
+    "torch",
     "torchvision",
     "torchmetrics[detection]",
     "tqdm",
@@ -34,6 +34,8 @@ dependencies = [
     "icecream",
     "timm==0.5.4",
     "pytorch_lightning",
+    "tensorboardX",
+    "tensorboard",
     "sympy",
     "numba",
     "click",
