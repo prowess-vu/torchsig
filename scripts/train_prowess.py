@@ -64,9 +64,10 @@ class ProwessNet(LightningModule):
 
 @click.command()
 @click.option("--id_seed", default=None, help="Unique integer seed for dataset reproducibility")
+@click.option("--dir", default=os.getcwd(), help="Directory to save model checkpoints")
 @click.option("--enet", default=0, type=int, help="EfficientNet model version to use")
 @click.option("--snr", nargs=2, type=int, default=None, help="Target min/max SNR for the training dataset")
-def main(id_seed: int, enet: int, snr: Tuple[int, int]):
+def main(id_seed: int, dir: str, enet: int, snr: Tuple[int, int]):
 
    # List of modulation classes to include in training
    class_list = ["ook", "bpsk", "4pam", "4ask", "qpsk", "8pam", "8ask", "8psk",
@@ -135,7 +136,7 @@ def main(id_seed: int, enet: int, snr: Tuple[int, int]):
    prowess_model = prowess_model.to(device)
 
    # Setup checkpoint callbacks
-   checkpoint_filename = "{}/checkpoint".format(os.getcwd())
+   checkpoint_filename = "{}/checkpoint-enet{}".format(dir, enet)
    checkpoint_callback = ModelCheckpoint(
       filename=checkpoint_filename,
       save_top_k=True,
@@ -144,7 +145,13 @@ def main(id_seed: int, enet: int, snr: Tuple[int, int]):
 
    # Create and fit trainer
    epochs = 500
-   trainer = Trainer(max_epochs=epochs, callbacks=checkpoint_callback, devices=1, accelerator="gpu" if torch.cuda.is_available() else "cpu", log_every_n_steps=10)
+   trainer = Trainer(
+      max_epochs=epochs,
+      callbacks=checkpoint_callback,
+      devices=1,
+      accelerator="gpu" if torch.cuda.is_available() else "cpu",
+      default_root_dir=dir,
+      log_every_n_steps=10)
    trainer.fit(prowess_model)
 
    # Load best checkpoint
@@ -180,7 +187,7 @@ def main(id_seed: int, enet: int, snr: Tuple[int, int]):
       rotate_x_text=90,
       figsize=(16, 9),
    )
-   plt.savefig("{}/classifier_confusion.png".format(os.getcwd()))
+   plt.savefig("{}/classifier_confusion_enet{}.png".format(dir, enet))
 
    print("Classification Report:")
    print(classification_report(y_true, y_preds))
