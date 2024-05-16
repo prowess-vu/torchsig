@@ -145,7 +145,6 @@ def create_effnet(network, ds_rate=2):
 
 
 def efficientnet_b0(
-    pretrained: bool = False,
     path: str = "efficientnet_b0.pt",
     num_classes: int = 53,
     drop_path_rate: float = 0.2,
@@ -155,9 +154,6 @@ def efficientnet_b0(
     `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
 
     Args:
-        pretrained (bool):
-            If True, returns a model pre-trained on Sig53
-
         path (str):
             Path to existing model or where to download checkpoint to
 
@@ -172,10 +168,6 @@ def efficientnet_b0(
             Dropout rate for training
 
     """
-    model_exists = os.path.exists(path)
-    if not model_exists and pretrained:
-        file_id = file_ids["efficientnet_b0"]
-        dl = gdown.download(id=file_id, output=path)
     mdl = create_effnet(
         timm.create_model(
             "efficientnet_b0",
@@ -185,7 +177,47 @@ def efficientnet_b0(
             drop_rate=drop_rate,
         )
     )
-    if pretrained:
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b1(
+    path: str = "efficientnet_b1.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B1 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b1",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
         mdl.load_state_dict(torch.load(path))
     if num_classes != 53:
         mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
@@ -193,7 +225,6 @@ def efficientnet_b0(
 
 
 def efficientnet_b2(
-    pretrained: bool = False,
     path: str = "efficientnet_b2.pt",
     num_classes: int = 53,
     drop_path_rate: float = 0.2,
@@ -203,9 +234,6 @@ def efficientnet_b2(
     `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
 
     Args:
-        pretrained (bool):
-            If True, returns a model pre-trained on Sig53
-
         path (str):
             Path to existing model or where to download checkpoint to
 
@@ -220,10 +248,6 @@ def efficientnet_b2(
             Dropout rate for training
 
     """
-    model_exists = os.path.exists(path)
-    if not model_exists and pretrained:
-        file_id = file_ids["efficientnet_b2"]
-        dl = gdown.download(id=file_id, output=path)
     mdl = create_effnet(
         timm.create_model(
             "efficientnet_b2",
@@ -233,27 +257,23 @@ def efficientnet_b2(
             drop_rate=drop_rate,
         )
     )
-    if pretrained:
+    if os.path.exists(path):
         mdl.load_state_dict(torch.load(path))
     if num_classes != 53:
         mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
     return mdl
 
 
-def efficientnet_b4(
-    pretrained: bool = False,
-    path: str = "efficientnet_b4.pt",
+def efficientnet_b3(
+    path: str = "efficientnet_b3.pt",
     num_classes: int = 53,
     drop_path_rate: float = 0.2,
     drop_rate: float = 0.3,
 ):
-    """Constructs a EfficientNet B4 architecture from
+    """Constructs a EfficientNet B3 architecture from
     `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
 
     Args:
-        pretrained (bool):
-            If True, returns a model pre-trained on Sig53
-
         path (str):
             Path to existing model or where to download checkpoint to
 
@@ -268,10 +288,46 @@ def efficientnet_b4(
             Dropout rate for training
 
     """
-    model_exists = os.path.exists(path)
-    if not model_exists and pretrained:
-        file_id = file_ids["efficientnet_b4"]
-        dl = gdown.download(id=file_id, output=path)
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b3",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b4(
+    path: str = "efficientnet_b4.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B4 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
     mdl = create_effnet(
         timm.create_model(
             "efficientnet_b4",
@@ -281,7 +337,167 @@ def efficientnet_b4(
             drop_rate=drop_rate,
         )
     )
-    if pretrained:
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b5(
+    path: str = "efficientnet_b5.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B5 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b5",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b6(
+    path: str = "efficientnet_b6.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B6 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b6",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b7(
+    path: str = "efficientnet_b7.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B7 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b7",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
+        mdl.load_state_dict(torch.load(path))
+    if num_classes != 53:
+        mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)
+    return mdl
+
+
+def efficientnet_b8(
+    path: str = "efficientnet_b8.pt",
+    num_classes: int = 53,
+    drop_path_rate: float = 0.2,
+    drop_rate: float = 0.3,
+):
+    """Constructs a EfficientNet B8 architecture from
+    `"EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks" <https://arxiv.org/abs/1905.11946>`_.
+
+    Args:
+        path (str):
+            Path to existing model or where to download checkpoint to
+
+        num_classes (int):
+            Number of output classes; if loading checkpoint and number does not
+            equal 53, final layer will not be loaded from checkpoint
+
+        drop_path_rate (float):
+            Drop path rate for training
+
+        drop_rate (float):
+            Dropout rate for training
+
+    """
+    mdl = create_effnet(
+        timm.create_model(
+            "efficientnet_b8",
+            num_classes=53,
+            in_chans=2,
+            drop_path_rate=drop_path_rate,
+            drop_rate=drop_rate,
+        )
+    )
+    if os.path.exists(path):
         mdl.load_state_dict(torch.load(path))
     if num_classes != 53:
         mdl.classifier = nn.Linear(mdl.classifier.in_features, num_classes)

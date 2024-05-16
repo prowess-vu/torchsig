@@ -1,5 +1,5 @@
 from torchsig.transforms.target_transforms import DescToClassIndex
-from torchsig.models.iq_models.efficientnet.efficientnet import efficientnet_b4
+from torchsig.models.iq_models.efficientnet.efficientnet import efficientnet_b0
 from torchsig.transforms.transforms import (
     RandomPhaseShift,
     Normalize,
@@ -113,7 +113,7 @@ def main(root: str, impaired: bool):
         drop_last=True,
     )
 
-    model = efficientnet_b4(pretrained=False)
+    model = efficientnet_b0()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -133,7 +133,7 @@ def main(root: str, impaired: bool):
     # Create and fit trainer
     epochs = 500
     trainer = Trainer(
-        max_epochs=epochs, callbacks=checkpoint_callback, devices=1, accelerator="gpu"
+        max_epochs=epochs, callbacks=checkpoint_callback, devices=1, accelerator="gpu" if torch.cuda.is_available() else "cpu", log_every_n_steps=10
     )
     trainer.fit(example_model)
 
