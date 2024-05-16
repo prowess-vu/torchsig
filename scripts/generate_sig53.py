@@ -14,6 +14,7 @@ def generate(path: str, configs: List[conf.Sig53Config]):
             num_iq_samples=config.num_iq_samples,
             use_class_idx=config.use_class_idx,
             include_snr=config.include_snr,
+            target_snr=config.target_snr,
             eb_no=config.eb_no,
         )
         loader = DatasetLoader(

@@ -1,4 +1,5 @@
 from typing import Callable, List, Optional
+from copy import deepcopy
 
 import numpy as np
 from torch.utils.data import ConcatDataset
@@ -144,6 +145,7 @@ class ModulationsDataset(ConcatDataset):
         level: int = 0,
         num_iq_samples: int = 2048,
         num_samples: int = 4500,
+        target_snr: int = None,
         include_snr: bool = False,
         eb_no: bool = False,
         transform: Optional[Callable] = None,
@@ -184,7 +186,7 @@ class ModulationsDataset(ConcatDataset):
             random_pulse_shaping = False
             internal_transforms = Compose(
                 [
-                    TargetSNR((100, 100), eb_no=eb_no),
+                    TargetSNR((100, 100) if target_snr is None else (target_snr, target_snr), eb_no=eb_no),
                     Normalize(norm=np.inf),
                 ]
             )
@@ -201,7 +203,7 @@ class ModulationsDataset(ConcatDataset):
                         (-0.1, 0.1),
                     ),
                     RandomResample((0.75, 1.5), num_iq_samples=num_iq_samples),
-                    TargetSNR((80, 80), eb_no=eb_no),
+                    TargetSNR((80, 80) if target_snr is None else (target_snr, target_snr), eb_no=eb_no),
                     Normalize(norm=np.inf),
                 ]
             )
@@ -228,7 +230,7 @@ class ModulationsDataset(ConcatDataset):
                         RandomResample((0.75, 1.5), num_iq_samples=num_iq_samples),
                         0.5,
                     ),
-                    TargetSNR((-2, 30), eb_no=eb_no),
+                    TargetSNR((-2, 30) if target_snr is None else (target_snr, target_snr), eb_no=eb_no),
                     Normalize(norm=np.inf),
                 ]
             )

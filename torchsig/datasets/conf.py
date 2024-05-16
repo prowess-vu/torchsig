@@ -8,6 +8,7 @@ class Sig53Config:
     level: int
     seed: int
     eb_no: bool
+    target_snr: int = None
     num_iq_samples: int = 4096
     use_class_idx: bool = True
     include_snr: bool = True
