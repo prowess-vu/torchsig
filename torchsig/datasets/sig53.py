@@ -87,18 +87,21 @@ class Sig53:
         cfg = getattr(conf, cfg)()  # type: ignore
 
         self.path = self.root / cfg.name
-        self.env = lmdb.Environment(
-            str(self.path).encode(), map_size=int(1e12), max_dbs=2, lock=False
-        )
-        self.data_db = self.env.open_db(b"data")
-        self.label_db = self.env.open_db(b"label")
-        with self.env.begin(db=self.data_db) as data_txn:
+        env = lmdb.Environment(str(self.path).encode(), map_size=int(1e12), max_dbs=2, lock=False)
+        data_db = env.open_db(b"data")
+        with env.begin(db=data_db) as data_txn:
             self.length = data_txn.stat()["entries"]
+        env.close()
 
     def __len__(self) -> int:
         return self.length
 
     def __getitem__(self, idx: int) -> Tuple[np.ndarray, Any]:
+        if not hasattr(self, "env"):
+            self.env = lmdb.Environment(str(self.path).encode(), map_size=int(1e12), max_dbs=2, lock=False)
+            self.data_db = self.env.open_db(b"data")
+            self.label_db = self.env.open_db(b"label")
+
         encoded_idx = pickle.dumps(idx)
         with self.env.begin(db=self.data_db) as data_txn:
             iq_data = pickle.loads(data_txn.get(encoded_idx)).numpy()
