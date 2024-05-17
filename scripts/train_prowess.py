@@ -66,8 +66,9 @@ class ProwessNet(LightningModule):
 @click.option("--id_seed", default=None, help="Unique integer seed for dataset reproducibility")
 @click.option("--dir", default=os.getcwd(), help="Directory to save model checkpoints")
 @click.option("--enet", default=0, type=int, help="EfficientNet model version to use")
+@click.option("--batch_size", default=32, type=int, help="Batch size for training")
 @click.option("--snr", nargs=2, type=int, default=None, help="Target min/max SNR for the training dataset")
-def main(id_seed: int, dir: str, enet: int, snr: Tuple[int, int]):
+def main(id_seed: int, dir: str, enet: int, batch_size: int, snr: Tuple[int, int]):
 
    # List of modulation classes to include in training
    class_list = ["ook", "bpsk", "4pam", "4ask", "qpsk", "8pam", "8ask", "8psk",
@@ -115,14 +116,14 @@ def main(id_seed: int, dir: str, enet: int, snr: Tuple[int, int]):
    # Create training and validation dataloaders
    train_dataloader = DataLoader(
       dataset=train_dataset,
-      batch_size=os.cpu_count(),
+      batch_size=batch_size,
       num_workers=os.cpu_count() // 2,
       shuffle=True,
       drop_last=True,
       persistent_workers=True)
    val_dataloader = DataLoader(
       dataset=val_dataset,
-      batch_size=os.cpu_count(),
+      batch_size=batch_size,
       num_workers=os.cpu_count() // 2,
       shuffle=False,
       drop_last=True,
