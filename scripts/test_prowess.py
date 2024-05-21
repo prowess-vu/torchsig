@@ -36,10 +36,10 @@ def main(model_path: str, enet: int, snr: int):
    if not model_path:
       print("Model path is required")
       sys.exit(1)
-   elif not enet:
+   elif enet is None:
       print("EfficientNet version is required")
       sys.exit(1)
-   elif not snr: 
+   elif snr is None:
       print("Target SNR is required")
       sys.exit(1)
 
@@ -52,7 +52,7 @@ def main(model_path: str, enet: int, snr: int):
                  "ofdm-64", "ofdm-72", "ofdm-128", "ofdm-180", "ofdm-256", "ofdm-300",
                  "ofdm-512", "ofdm-600", "ofdm-900", "ofdm-1024", "ofdm-1200", "ofdm-2048"]
    num_classes = len(class_list)
-   num_validation_samples = num_classes * 10
+   num_validation_samples = num_classes * 1000
 
    # Create the validation dataset
    transform = Compose([ComplexTo2D()])
@@ -104,14 +104,17 @@ def main(model_path: str, enet: int, snr: int):
       y_preds,
       classes=class_list,
       normalize=True,
-      title="EfficientNet{} Confusion Matrix\nTotal Accuracy: {:.2f}%".format(enet, acc * 100),
+      title="EfficientNet{} Confusion Matrix (SNR = {})\nTotal Accuracy: {:.2f}%".format(enet, snr, acc * 100),
       text=False,
       rotate_x_text=90,
       figsize=(16, 9),
    )
-   plt.savefig("{}/classifier_confusion_enet{}.png".format(os.path.dirname(model_path), enet))
+   plt.savefig("{}/classifier_confusion_enet{}_snr{}.png".format(os.path.dirname(model_path), enet, snr))
+   report = classification_report(y_true, y_preds, zero_division=0)
    print("Classification Report:")
-   print(classification_report(y_true, y_preds))
+   print(report)
+   with open("{}/classification_report_enet{}_snr{}.txt".format(os.path.dirname(model_path), enet, snr), "w") as f:
+      f.write(report)
 
 
 if __name__ == "__main__":
