@@ -206,8 +206,8 @@ class ConstellationVisualizer(Visualizer):
                 sample_idx + 1,
             )
             plt.scatter(np.real(iq_data[sample_idx]), np.imag(iq_data[sample_idx]))
-            plt.xticks([])
-            plt.yticks([])
+            #plt.xticks([])
+            #plt.yticks([])
             plt.title(str(targets[sample_idx]))
         return figure
 
