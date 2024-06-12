@@ -145,6 +145,7 @@ class ModulationsDataset(ConcatDataset):
         level: int = 0,
         num_iq_samples: int = 2048,
         num_samples: int = 4500,
+        iq_samples_per_symbol: int = 2,
         target_snr: Tuple[int, int] = None,
         include_snr: bool = False,
         eb_no: bool = False,
@@ -250,7 +251,7 @@ class ModulationsDataset(ConcatDataset):
                 modulations=digital_classes,  # effectively uses all modulations
                 num_iq_samples=num_iq_samples,
                 num_samples_per_class=num_samples_per_class,
-                iq_samples_per_symbol=2,
+                iq_samples_per_symbol=iq_samples_per_symbol,
                 random_data=True,
                 random_pulse_shaping=random_pulse_shaping,
                 transform=internal_transforms,

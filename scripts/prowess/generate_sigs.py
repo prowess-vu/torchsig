@@ -34,6 +34,7 @@ def main(snr: int, outputs: int):
       level=0,
       num_iq_samples=4096,
       num_samples=num_samples,
+      iq_samples_per_symbol=1,
       target_snr=snr,
       transform=None,
       include_snr=False,

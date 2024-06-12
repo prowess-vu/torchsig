@@ -235,8 +235,8 @@ class IQVisualizer(Visualizer):
             )
             plt.plot(np.real(iq_data[sample_idx]))
             plt.plot(np.imag(iq_data[sample_idx]))
-            plt.xticks([])
-            plt.yticks([])
+            #plt.xticks([])
+            #plt.yticks([])
             plt.title(str(targets[sample_idx]))
         return figure
 
@@ -253,6 +253,7 @@ class TimeSeriesVisualizer(Visualizer):
         super(TimeSeriesVisualizer, self).__init__(**kwargs)
 
     def _visualize(self, data: np.ndarray, targets: np.ndarray) -> Figure:
+        data = iq_to_complex_magnitude(data)
         batch_size = data.shape[0]
         figure = plt.figure()
         for sample_idx in range(batch_size):
@@ -262,8 +263,8 @@ class TimeSeriesVisualizer(Visualizer):
                 sample_idx + 1,
             )
             plt.plot(data[sample_idx])
-            plt.xticks([])
-            plt.yticks([])
+            #plt.xticks([])
+            #plt.yticks([])
             plt.title(str(targets[sample_idx]))
         return figure
 
